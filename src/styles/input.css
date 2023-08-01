@@ -1,0 +1,64 @@
+:root {
+  --color: black;
+  --fret-color: grey;
+  --string-color: silver;
+
+  --fret-width: 10px;
+  --string-width: 5px;
+}
+
+body {
+  box-sizing: border-box;
+}
+
+.guitar {
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--color);
+  display: flex;
+}
+
+.fret {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 5vh 0;
+  justify-content: space-between;
+  position: relative;
+}
+
+.fret::after {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  width: var(--fret-width);
+  background-color: var(--fret-color);
+  content: "";
+}
+
+.fret:first-of-type::before {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  width: var(--fret-width);
+  background-color: var(--fret-color);
+  content: "";
+}
+
+.string {
+  flex-grow: 1;
+  position: relative;
+}
+
+.string::after {
+  position: absolute;
+  top: calc(50% - var(--string-width));
+  right: 0;
+  left: 0;
+  height: var(--string-width);
+  background-color: var(--string-color);
+  z-index: 1;
+  content: "";
+}
