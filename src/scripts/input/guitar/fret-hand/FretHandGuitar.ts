@@ -1,21 +1,21 @@
-import { GuitarState } from "@root/scripts/types"
+import { FretHandGuitarState } from "@root/scripts/types"
 
-const DEFAULT_STATE: GuitarState = {
+const DEFAULT_STATE: FretHandGuitarState = {
   strings: [
-    { heldOnFrets: [], isPulled: false, isMuted: false },
-    { heldOnFrets: [], isPulled: false, isMuted: false },
-    { heldOnFrets: [], isPulled: false, isMuted: false },
-    { heldOnFrets: [], isPulled: false, isMuted: false },
-    { heldOnFrets: [], isPulled: false, isMuted: false },
-    { heldOnFrets: [], isPulled: false, isMuted: false },
+    { heldOnFrets: [], isMuted: false },
+    { heldOnFrets: [], isMuted: false },
+    { heldOnFrets: [], isMuted: false },
+    { heldOnFrets: [], isMuted: false },
+    { heldOnFrets: [], isMuted: false },
+    { heldOnFrets: [], isMuted: false },
   ],
   baseFret: 0,
 }
 
-const FRET_LIMIT_IN_DEGREES = 50
+const FRET_LIMIT_IN_DEGREES = 20
 
-export class Guitar {
-  state: GuitarState
+export class FretHandGuitar {
+  state: FretHandGuitarState
   initialDeviceOrientation: { alpha: number; beta: number; gamma: number }
   guitarNode: HTMLDivElement
 
@@ -44,13 +44,7 @@ export class Guitar {
   handleDeviceOrientationChange = (event: DeviceOrientationEvent) => {
     if (!this.initialDeviceOrientation) this.initialDeviceOrientation = event
 
-    const deltaAlpha = ((this.initialDeviceOrientation.alpha - event.alpha + 180) % 360) - 180
-
-    document.body.innerHTML = `
-    a: ${event.alpha.toFixed()} <br />
-    b: ${event.beta.toFixed()} <br />
-    g: ${event.gamma.toFixed()} <br />
-    `
+    const deltaAlpha = Math.abs(((Math.abs(this.initialDeviceOrientation.alpha - event.alpha) + 180) % 360) - 180)
 
     const baseFret = Math.floor(deltaAlpha / FRET_LIMIT_IN_DEGREES)
 
@@ -98,5 +92,5 @@ export class Guitar {
     document.documentElement.requestFullscreen().then(() => screen.orientation.lock("landscape"))
   }
 
-  onUpdate: (state: GuitarState) => void
+  onUpdate: (state: FretHandGuitarState) => void
 }

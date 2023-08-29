@@ -1,13 +1,37 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const TSConfigPathsWebpackPlugin = require("tsconfig-paths-webpack-plugin")
+const CopyPlugin = require("copy-webpack-plugin")
 const path = require("path")
 
-module.exports = {
-  entry: {
-    index: "./src/scripts/index/index.ts",
-    input: "./src/scripts/input/index.ts",
-    output: "./src/scripts/output/index.ts",
+const pages = [
+  {
+    name: "index",
+    source: "./src/scripts/index/index.ts",
   },
+  {
+    name: "output",
+    source: "./src/scripts/output/index.ts",
+  },
+  {
+    name: "input",
+    source: "./src/scripts/input/index.ts",
+  },
+  {
+    name: "guitar",
+    source: "./src/scripts/input/guitar/index.ts",
+  },
+  {
+    name: "fret-hand-guitar",
+    source: "./src/scripts/input/guitar/fret-hand/index.ts",
+  },
+  {
+    name: "picking-hand-guitar",
+    source: "./src/scripts/input/guitar/picking-hand/index.ts",
+  },
+]
+
+module.exports = {
+  entry: pages.reduce((config, { name, source }) => ({ ...config, [name]: source }), {}),
   module: {
     rules: [
       {
@@ -30,37 +54,22 @@ module.exports = {
     path: path.resolve(__dirname, "build"),
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      filename: "index.html",
-      chunks: ["index"],
-      title: "Home",
-      template: "./src/pages/index.html",
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        minifyCSS: true,
-      },
-    }),
-    new HtmlWebpackPlugin({
-      filename: "input.html",
-      title: "Input",
-      chunks: ["input"],
-      template: "./src/pages/input.html",
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        minifyCSS: true,
-      },
-    }),
-    new HtmlWebpackPlugin({
-      filename: "output.html",
-      title: "Output",
-      chunks: ["output"],
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        minifyCSS: true,
-      },
+    ...pages.map(
+      page =>
+        new HtmlWebpackPlugin({
+          filename: `${page.name}.html`,
+          chunks: [page.name],
+          template: `./src/pages/${page.name}.html`,
+          publicPath: "/",
+          minify: {
+            removeComments: true,
+            collapseWhitespace: true,
+            minifyCSS: true,
+          },
+        }),
+    ),
+    new CopyPlugin({
+      patterns: [{ from: "./src/assets", to: "assets" }],
     }),
   ],
 }
